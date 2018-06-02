@@ -25,14 +25,14 @@ $(function() {
             expect(allFeeds).toBeDefined();
             expect(allFeeds.length).not.toBe(0);
         });
-
+        // Checks if all feeds in allFeeds variable have url and it's not an empty string.
         it('have URL', function() {
             allFeeds.forEach(element => {
                 expect(element.url).toBeDefined();
                 expect(element.url.length).not.toBe(0);
             });
         })
-
+        // Checks if all feeds in allFeeds variable have names and they're not empty strings
         it('have name', function() {
             allFeeds.forEach(element => {
                 expect(element.name).toBeDefined();
@@ -40,13 +40,13 @@ $(function() {
             });
         })
     });
-
+    // This suite tests menu functionalities
     describe('The menu', function() {
-
+        // Checks if the menu is hidden by default
         it('is hidden by default', function() {
             expect(document.body).toHaveClass('menu-hidden');
         })
-
+        // Checks if the menu changes visibility on click
         it('changes visibility on click', function() {
             const click = new MouseEvent('click'),
                   menuIcon = document.querySelector('.menu-icon-link');
@@ -56,35 +56,41 @@ $(function() {
             expect(document.body).toHaveClass('menu-hidden');
         });
     });
-
+    // This suite tests the initial entries of our RSS feed
     describe('Initial Entries', function() {
 
         const feed = document.querySelector('.feed');
+        let feedChildren;
         beforeEach(function(done) {
             loadFeed(0, function() {
+                feedChildren = Array.from(feed.children);
                 done();
             });
         });
-
-        it('contains at least one entry', function(done) {
-            expect(feed.children).not.toEqual([]);
+        // Checks if our initial entries contain at least one entry
+        it('contain at least one entry', function(done) {
+            expect(feedChildren.length).toBeGreaterThan(0);
             done();
         });
     });
-
+    // This suite tests the functionality of changing feed
     describe('New Feed Selection', function() {
 
         const feed = document.querySelector('.feed');
-        let previousContent;
+        let previousContent,
+            currentContent;
         beforeEach(function(done) {
-            previousContent = feed.innerHTML;
-            loadFeed(1, function() {
-                done();
+            loadFeed(0, function() {
+                previousContent = feed.innerHTML;
+                loadFeed(1, function() {
+                    currentContent = feed.innerHTML;
+                    done();
+                });
             });
         });
-
+        // Checks if the feed selection actually changes content of the feed
         it('changes content', function(done) {
-            expect(feed.innerHTML).not.toBe(previousContent);
+            expect(currentContent).not.toBe(previousContent);
             done();
         });
     })
